@@ -1,0 +1,45 @@
+{
+  "cwd": "/Users/yusifkatulie/Developer/padyzone",
+  "type": [
+    "capacitor"
+  ],
+  "name": "PadyZone",
+  "framework": "vue",
+  "template": "single-view",
+  "bundler": "vite",
+  "cssPreProcessor": "less",
+  "theming": {
+    "customColor": true,
+    "color": "#df00ff",
+    "darkMode": true,
+    "iconFonts": true
+  },
+  "customBuild": true,
+  "customBuildConfig": {
+    "rtl": false,
+    "darkTheme": true,
+    "lightTheme": true,
+    "themes": [
+      "ios",
+      "md"
+    ],
+    "components": [
+      "dialog",
+      "virtual-list",
+      "list-index",
+      "card",
+      "chip",
+      "form",
+      "input",
+      "fab",
+      "searchbar"
+    ]
+  },
+  "pkg": "io.framework7.myapp",
+  "capacitor": {
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  }
+}
