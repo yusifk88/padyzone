@@ -1,10 +1,10 @@
 <template>
   <f7-block-title>{{ item.value }} (UTC {{item.offset>=0 ? '+'+item.offset : item.offset}})</f7-block-title>
   <f7-list-item
-      v-for="zone in item.utc"
+      v-for="zone in item.cities"
       link="#"
-      :title="zone"
-      :after="getTime(zone)"
+      :title="zone.city"
+      :after="getTime(zone.timezone)"
 
   />
 

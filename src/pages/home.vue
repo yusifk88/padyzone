@@ -6,6 +6,10 @@
       <f7-nav-title sliding>PadyZone</f7-nav-title>
 
       <f7-nav-title-large>PadyZone</f7-nav-title-large>
+
+      <f7-nav-right>
+        <f7-button @click="setTheme">Change Theme</f7-button>
+      </f7-nav-right>
     </f7-navbar>
     <f7-block>
       <p>Track time across the world</p>
@@ -13,47 +17,58 @@
 
     <timezone-card></timezone-card>
     <f7-fab @click="show=!show" position="center-bottom">
-      <f7-icon ios="f7:plus" md="material:add"></f7-icon>
+      <f7-icon ios="f7:person_badge_plus" md="material:person_badge_plus"></f7-icon>
     </f7-fab>
 
 
-      <f7-sheet
-          :opened="show"
-          class="create-new-sheet"
-          style="height: 80vh"
-          swipe-to-close
-          :breakpoints="[0.8, 0.99]"
-          backdrop
-          :backdrop-breakpoint="0.6"
-          push
-          :push-breakpoint="0.2"
-          @sheet:closed="show=false"
-      >
+    <f7-sheet
+        :opened="show"
+        class="create-new-sheet"
+        style="height: 90vh"
+        backdrop
+        @sheet:closed="show=false"
+    >
 
-          <f7-subnavbar :inner="false">
-            <f7-searchbar :custom-search="true" placeholder="Enter name of place" :expandable="false" search-container=".search-list" search-in=".item-title"></f7-searchbar>
-          </f7-subnavbar>
+      <f7-navbar title="Add a friend">
+        <f7-nav-right>
+          <f7-button @click="show=!show">
+            <f7-icon ios="f7:close" md="material:close"></f7-icon>
+          </f7-button>
+        </f7-nav-right>
+      </f7-navbar>
+      <f7-subnavbar :inner="true">
+        <f7-searchbar
+            @click:clear="searchKey=''"
+            placeholder="Enter name of their city"
+            :expandable="false"
+            :custom-search="true"
+            @input="searchChanged"
+        ></f7-searchbar>
+      </f7-subnavbar>
 
-<!--        <div class="swipe-handler" style="background-color: transparent"></div>-->
-        <f7-page-content class="swiper-coverflow">
-            <f7-list
-                virtual-list
-                media-list
-                dividers-ios
-                strong-ios
-                outline-ios
-            >
-            <timezone-item
-            v-for="timeZoneItems in items"
-            :item="timeZoneItems"
-            :CurrentTime="currentTime"
-            ></timezone-item>
 
-            </f7-list>
+      <!--        <div class="swipe-handler" style="background-color: transparent"></div>-->
+      <f7-page-content>
 
-        </f7-page-content>
+        <f7-list
+            virtual-list
+            media-list
+            dividers-ios
+            strong-ios
+            outline-ios
+            class="search-list searchbar-found"
+        >
+          <timezone-item
+              v-for="timeZoneItems in filteredItems"
+              :item="timeZoneItems"
+              :CurrentTime="currentTime"
+          ></timezone-item>
 
-      </f7-sheet>
+        </f7-list>
+
+      </f7-page-content>
+
+    </f7-sheet>
 
   </f7-page>
 </template>
@@ -62,23 +77,16 @@
 import TimezoneCard from "@/components/TimezoneCard.vue";
 import TimezoneItem from "@/components/TimezoneItem.vue";
 import dayjs from "dayjs";
+import {f7} from "framework7-vue";
+
 export default {
-  components:{TimezoneItem, TimezoneCard},
-  data(){
-    return{
-      currentTime:dayjs().format(),
-      show:false,
-      items:[
-        {
-          value: "Dateline Standard Time",
-          abbr: "DST",
-          offset: -12,
-          isdst: false,
-          text: "(UTC-12:00) International Date Line West",
-          utc: [
-            "Etc/GMT+12"
-          ]
-        },
+  components: {TimezoneItem, TimezoneCard},
+  data() {
+    return {
+      searchKey: "",
+      currentTime: dayjs().format(),
+      show: false,
+      items: [
         {
           value: "UTC-11",
           abbr: "U",
@@ -90,6 +98,48 @@ export default {
             "Pacific/Midway",
             "Pacific/Niue",
             "Pacific/Pago_Pago"
+          ],
+          cities: [
+            {
+              timezone: "Etc/GMT+11",
+              city: "Atafu"
+            },
+            {
+              timezone: "Etc/GMT+11",
+              city: "Midway"
+            },
+            {
+              timezone: "Etc/GMT+11",
+              city: "Pago Pago"
+            },
+            {
+              timezone: "Etc/GMT+11",
+              city: "Faleasao"
+            },
+            {
+              timezone: "Etc/GMT+11",
+              city: "Tula"
+            },
+            {
+              timezone: "Pacific/Midway",
+              city: "Midway"
+            },
+            {
+              timezone: "Pacific/Niue",
+              city: "Alofi"
+            },
+            {
+              timezone: "Pacific/Pago_Pago",
+              city: "Pago Pago"
+            },
+            {
+              timezone: "Pacific/Pago_Pago",
+              city: "Fagatogo"
+            },
+            {
+              timezone: "Pacific/Pago_Pago",
+              city: "Tafuna"
+            }
           ]
         },
         {
@@ -104,7 +154,86 @@ export default {
             "Pacific/Johnston",
             "Pacific/Rarotonga",
             "Pacific/Tahiti"
+          ],
+          cities: [
+            {
+              timezone: "Etc/GMT+10",
+              city: "Honolulu"
+            },
+            {
+              timezone: "Etc/GMT+10",
+              city: "Hilo"
+            },
+            {
+              timezone: "Etc/GMT+10",
+              city: "Pearl City"
+            },
+            {
+              timezone: "Etc/GMT+10",
+              city: "Kailua"
+            },
+            {
+              timezone: "Etc/GMT+10",
+              city: "Waipahu"
+            },
+            {
+              timezone: "Etc/GMT+10",
+              city: "Rarotonga"
+            },
+            {
+              timezone: "Etc/GMT+10",
+              city: "Avarua"
+            },
+            {
+              timezone: "Etc/GMT+10",
+              city: "Papeete"
+            },
+            {
+              timezone: "Pacific/Honolulu",
+              city: "Honolulu"
+            },
+            {
+              timezone: "Pacific/Honolulu",
+              city: "Hilo"
+            },
+            {
+              timezone: "Pacific/Honolulu",
+              city: "Kailua"
+            },
+            {
+              timezone: "Pacific/Honolulu",
+              city: "Waipahu"
+            },
+            {
+              timezone: "Pacific/Honolulu",
+              city: "Pearl City"
+            },
+            {
+              timezone: "Pacific/Johnston",
+              city: "Johnston Atoll"
+            },
+            {
+              timezone: "Pacific/Rarotonga",
+              city: "Rarotonga"
+            },
+            {
+              timezone: "Pacific/Rarotonga",
+              city: "Avarua"
+            },
+            {
+              timezone: "Pacific/Tahiti",
+              city: "Papeete"
+            },
+            {
+              timezone: "Pacific/Tahiti",
+              city: "Faaa"
+            },
+            {
+              timezone: "Pacific/Tahiti",
+              city: "Punaauia"
+            }
           ]
+
         },
         {
           value: "Alaskan Standard Time",
@@ -118,7 +247,82 @@ export default {
             "America/Nome",
             "America/Sitka",
             "America/Yakutat"
+          ],
+          cities: [
+            {
+              timezone: "America/Anchorage",
+              city: "Anchorage"
+            },
+            {
+              timezone: "America/Anchorage",
+              city: "Wasilla"
+            },
+            {
+              timezone: "America/Anchorage",
+              city: "Palmer"
+            },
+            {
+              timezone: "America/Anchorage",
+              city: "Kenai"
+            },
+            {
+              timezone: "America/Anchorage",
+              city: "Homer"
+            },
+            {
+              timezone: "America/Juneau",
+              city: "Juneau"
+            },
+            {
+              timezone: "America/Juneau",
+              city: "Douglas"
+            },
+            {
+              timezone: "America/Juneau",
+              city: "Auke Bay"
+            },
+            {
+              timezone: "America/Nome",
+              city: "Nome"
+            },
+            {
+              timezone: "America/Nome",
+              city: "Teller"
+            },
+            {
+              timezone: "America/Nome",
+              city: "Brevig Mission"
+            },
+            {
+              timezone: "America/Nome",
+              city: "Wales"
+            },
+            {
+              timezone: "America/Sitka",
+              city: "Sitka"
+            },
+            {
+              timezone: "America/Sitka",
+              city: "Baranof"
+            },
+            {
+              timezone: "America/Sitka",
+              city: "Port Alexander"
+            },
+            {
+              timezone: "America/Yakutat",
+              city: "Yakutat"
+            },
+            {
+              timezone: "America/Yakutat",
+              city: "Icy Bay"
+            },
+            {
+              timezone: "America/Yakutat",
+              city: "Cape Yakataga"
+            }
           ]
+
         },
         {
           value: "Pacific Standard Time (Mexico)",
@@ -128,7 +332,31 @@ export default {
           text: "(UTC-08:00) Baja California",
           utc: [
             "America/Santa_Isabel"
+          ],
+          cities: [
+            {
+              timezone: "America/Santa_Isabel",
+              city: "Santa Isabel"
+            },
+            {
+              timezone: "America/Santa_Isabel",
+              city: "Ensenada"
+            },
+            {
+              timezone: "America/Santa_Isabel",
+              city: "Mexicali"
+            },
+            {
+              timezone: "America/Santa_Isabel",
+              city: "Tijuana"
+            },
+            {
+              timezone: "America/Santa_Isabel",
+              city: "Tecate"
+            }
           ]
+
+
         },
         {
           value: "Pacific Daylight Time",
@@ -140,7 +368,66 @@ export default {
             "America/Los_Angeles",
             "America/Tijuana",
             "America/Vancouver"
+          ],
+          cities: [
+            {
+              timezone: "America/Los_Angeles",
+              city: "Los Angeles"
+            },
+            {
+              timezone: "America/Los_Angeles",
+              city: "San Francisco"
+            },
+            {
+              timezone: "America/Los_Angeles",
+              city: "San Diego"
+            },
+            {
+              timezone: "America/Los_Angeles",
+              city: "Sacramento"
+            },
+            {
+              timezone: "America/Los_Angeles",
+              city: "San Jose"
+            },
+            {
+              timezone: "America/Tijuana",
+              city: "Tijuana"
+            },
+            {
+              timezone: "America/Tijuana",
+              city: "Mexicali"
+            },
+            {
+              timezone: "America/Tijuana",
+              city: "Ensenada"
+            },
+            {
+              timezone: "America/Tijuana",
+              city: "Tecate"
+            },
+            {
+              timezone: "America/Vancouver",
+              city: "Vancouver"
+            },
+            {
+              timezone: "America/Vancouver",
+              city: "Surrey"
+            },
+            {
+              timezone: "America/Vancouver",
+              city: "Burnaby"
+            },
+            {
+              timezone: "America/Vancouver",
+              city: "Richmond"
+            },
+            {
+              timezone: "America/Vancouver",
+              city: "Abbotsford"
+            }
           ]
+
         },
         {
           value: "Pacific Standard Time",
@@ -149,11 +436,43 @@ export default {
           isdst: false,
           text: "(UTC-08:00) Pacific Standard Time (US & Canada)",
           utc: [
-            "America/Los_Angeles",
-            "America/Tijuana",
-            "America/Vancouver",
             "PST8PDT"
+          ],
+          cities: [
+            {
+              timezone: "PST8PDT",
+              city: "Los Angeles"
+            },
+            {
+              timezone: "PST8PDT",
+              city: "San Francisco"
+            },
+            {
+              timezone: "PST8PDT",
+              city: "San Diego"
+            },
+            {
+              timezone: "PST8PDT",
+              city: "Sacramento"
+            },
+            {
+              timezone: "PST8PDT",
+              city: "San Jose"
+            },
+            {
+              timezone: "PST8PDT",
+              city: "Seattle"
+            },
+            {
+              timezone: "PST8PDT",
+              city: "Portland"
+            },
+            {
+              timezone: "PST8PDT",
+              city: "Las Vegas"
+            }
           ]
+
         },
         {
           value: "US Mountain Standard Time",
@@ -169,7 +488,86 @@ export default {
             "America/Phoenix",
             "America/Whitehorse",
             "Etc/GMT+7"
+          ],
+          cities: [
+            {
+              timezone: "America/Creston",
+              city: "Creston"
+            },
+            {
+              timezone: "America/Dawson",
+              city: "Dawson"
+            },
+            {
+              timezone: "America/Dawson",
+              city: "Eagle Plains"
+            },
+            {
+              timezone: "America/Dawson_Creek",
+              city: "Dawson Creek"
+            },
+            {
+              timezone: "America/Dawson_Creek",
+              city: "Fort St. John"
+            },
+            {
+              timezone: "America/Hermosillo",
+              city: "Hermosillo"
+            },
+            {
+              timezone: "America/Hermosillo",
+              city: "Guaymas"
+            },
+            {
+              timezone: "America/Hermosillo",
+              city: "Ciudad Obregón"
+            },
+            {
+              timezone: "America/Phoenix",
+              city: "Phoenix"
+            },
+            {
+              timezone: "America/Phoenix",
+              city: "Tucson"
+            },
+            {
+              timezone: "America/Phoenix",
+              city: "Mesa"
+            },
+            {
+              timezone: "America/Phoenix",
+              city: "Scottsdale"
+            },
+            {
+              timezone: "America/Phoenix",
+              city: "Tempe"
+            },
+            {
+              timezone: "America/Whitehorse",
+              city: "Whitehorse"
+            },
+            {
+              timezone: "America/Whitehorse",
+              city: "Haines Junction"
+            },
+            {
+              timezone: "America/Whitehorse",
+              city: "Watson Lake"
+            },
+            {
+              timezone: "Etc/GMT+7",
+              city: "San Felipe"
+            },
+            {
+              timezone: "Etc/GMT+7",
+              city: "Puerto Peñasco"
+            },
+            {
+              timezone: "Etc/GMT+7",
+              city: "Page"
+            }
           ]
+
         },
         {
           value: "Mountain Standard Time (Mexico)",
@@ -180,7 +578,50 @@ export default {
           utc: [
             "America/Chihuahua",
             "America/Mazatlan"
+          ],
+          cities: [
+            {
+              timezone: "America/Chihuahua",
+              city: "Chihuahua"
+            },
+            {
+              timezone: "America/Chihuahua",
+              city: "Ciudad Juárez"
+            },
+            {
+              timezone: "America/Chihuahua",
+              city: "Delicias"
+            },
+            {
+              timezone: "America/Chihuahua",
+              city: "Parral"
+            },
+            {
+              timezone: "America/Chihuahua",
+              city: "Cuauhtémoc"
+            },
+            {
+              timezone: "America/Mazatlan",
+              city: "Mazatlán"
+            },
+            {
+              timezone: "America/Mazatlan",
+              city: "Culiacán"
+            },
+            {
+              timezone: "America/Mazatlan",
+              city: "Los Mochis"
+            },
+            {
+              timezone: "America/Mazatlan",
+              city: "Durango"
+            },
+            {
+              timezone: "America/Mazatlan",
+              city: "Navolato"
+            }
           ]
+
         },
         {
           value: "Mountain Standard Time",
@@ -197,7 +638,110 @@ export default {
             "America/Ojinaga",
             "America/Yellowknife",
             "MST7MDT"
+          ],
+          cities: [
+            {
+              timezone: "America/Boise",
+              city: "Boise"
+            },
+            {
+              timezone: "America/Boise",
+              city: "Twin Falls"
+            },
+            {
+              timezone: "America/Boise",
+              city: "Pocatello"
+            },
+            {
+              timezone: "America/Cambridge_Bay",
+              city: "Cambridge Bay"
+            },
+            {
+              timezone: "America/Cambridge_Bay",
+              city: "Kugluktuk"
+            },
+            {
+              timezone: "America/Denver",
+              city: "Denver"
+            },
+            {
+              timezone: "America/Denver",
+              city: "Colorado Springs"
+            },
+            {
+              timezone: "America/Denver",
+              city: "Aurora"
+            },
+            {
+              timezone: "America/Denver",
+              city: "Fort Collins"
+            },
+            {
+              timezone: "America/Edmonton",
+              city: "Edmonton"
+            },
+            {
+              timezone: "America/Edmonton",
+              city: "Red Deer"
+            },
+            {
+              timezone: "America/Edmonton",
+              city: "Lethbridge"
+            },
+            {
+              timezone: "America/Edmonton",
+              city: "Grande Prairie"
+            },
+            {
+              timezone: "America/Inuvik",
+              city: "Inuvik"
+            },
+            {
+              timezone: "America/Inuvik",
+              city: "Tuktoyaktuk"
+            },
+            {
+              timezone: "America/Inuvik",
+              city: "Aklavik"
+            },
+            {
+              timezone: "America/Ojinaga",
+              city: "Ojinaga"
+            },
+            {
+              timezone: "America/Ojinaga",
+              city: "Presidio"
+            },
+            {
+              timezone: "America/Yellowknife",
+              city: "Yellowknife"
+            },
+            {
+              timezone: "America/Yellowknife",
+              city: "Hay River"
+            },
+            {
+              timezone: "America/Yellowknife",
+              city: "Fort Smith"
+            },
+            {
+              timezone: "MST7MDT",
+              city: "Salt Lake City"
+            },
+            {
+              timezone: "MST7MDT",
+              city: "Cheyenne"
+            },
+            {
+              timezone: "MST7MDT",
+              city: "Helena"
+            },
+            {
+              timezone: "MST7MDT",
+              city: "Billings"
+            }
           ]
+
         },
         {
           value: "Central America Standard Time",
@@ -214,7 +758,106 @@ export default {
             "America/Tegucigalpa",
             "Etc/GMT+6",
             "Pacific/Galapagos"
+          ],
+          cities: [
+            {
+              timezone: "America/Belize",
+              city: "Belize City"
+            },
+            {
+              timezone: "America/Belize",
+              city: "San Ignacio"
+            },
+            {
+              timezone: "America/Belize",
+              city: "Orange Walk"
+            },
+            {
+              timezone: "America/Costa_Rica",
+              city: "San José"
+            },
+            {
+              timezone: "America/Costa_Rica",
+              city: "Alajuela"
+            },
+            {
+              timezone: "America/Costa_Rica",
+              city: "Cartago"
+            },
+            {
+              timezone: "America/El_Salvador",
+              city: "San Salvador"
+            },
+            {
+              timezone: "America/El_Salvador",
+              city: "Santa Ana"
+            },
+            {
+              timezone: "America/El_Salvador",
+              city: "Soyapango"
+            },
+            {
+              timezone: "America/Guatemala",
+              city: "Guatemala City"
+            },
+            {
+              timezone: "America/Guatemala",
+              city: "Mixco"
+            },
+            {
+              timezone: "America/Guatemala",
+              city: "Quetzaltenango"
+            },
+            {
+              timezone: "America/Managua",
+              city: "Managua"
+            },
+            {
+              timezone: "America/Managua",
+              city: "León"
+            },
+            {
+              timezone: "America/Managua",
+              city: "Masaya"
+            },
+            {
+              timezone: "America/Tegucigalpa",
+              city: "Tegucigalpa"
+            },
+            {
+              timezone: "America/Tegucigalpa",
+              city: "San Pedro Sula"
+            },
+            {
+              timezone: "America/Tegucigalpa",
+              city: "La Ceiba"
+            },
+            {
+              timezone: "Etc/GMT+6",
+              city: "Puerto Barrios"
+            },
+            {
+              timezone: "Etc/GMT+6",
+              city: "Bluefields"
+            },
+            {
+              timezone: "Etc/GMT+6",
+              city: "Punta Gorda"
+            },
+            {
+              timezone: "Pacific/Galapagos",
+              city: "Puerto Ayora"
+            },
+            {
+              timezone: "Pacific/Galapagos",
+              city: "Puerto Baquerizo Moreno"
+            },
+            {
+              timezone: "Pacific/Galapagos",
+              city: "Isabela Island"
+            }
           ]
+
         },
         {
           value: "Central Standard Time",
@@ -236,7 +879,130 @@ export default {
             "America/Resolute",
             "America/Winnipeg",
             "CST6CDT"
+          ],
+          cities: [
+            {
+              timezone: "America/Chicago",
+              city: "Chicago"
+            },
+            {
+              timezone: "America/Chicago",
+              city: "Houston"
+            },
+            {
+              timezone: "America/Chicago",
+              city: "Dallas"
+            },
+            {
+              timezone: "America/Chicago",
+              city: "Austin"
+            },
+            {
+              timezone: "America/Chicago",
+              city: "Minneapolis"
+            },
+            {
+              timezone: "America/Indiana/Knox",
+              city: "Knox"
+            },
+            {
+              timezone: "America/Indiana/Knox",
+              city: "North Judson"
+            },
+            {
+              timezone: "America/Indiana/Tell_City",
+              city: "Tell City"
+            },
+            {
+              timezone: "America/Indiana/Tell_City",
+              city: "Cannelton"
+            },
+            {
+              timezone: "America/Matamoros",
+              city: "Matamoros"
+            },
+            {
+              timezone: "America/Matamoros",
+              city: "Reynosa"
+            },
+            {
+              timezone: "America/Matamoros",
+              city: "Nuevo Laredo"
+            },
+            {
+              timezone: "America/Menominee",
+              city: "Menominee"
+            },
+            {
+              timezone: "America/Menominee",
+              city: "Escanaba"
+            },
+            {
+              timezone: "America/North_Dakota/Beulah",
+              city: "Beulah"
+            },
+            {
+              timezone: "America/North_Dakota/Center",
+              city: "Center"
+            },
+            {
+              timezone: "America/North_Dakota/New_Salem",
+              city: "New Salem"
+            },
+            {
+              timezone: "America/Rainy_River",
+              city: "Rainy River"
+            },
+            {
+              timezone: "America/Rainy_River",
+              city: "Fort Frances"
+            },
+            {
+              timezone: "America/Rankin_Inlet",
+              city: "Rankin Inlet"
+            },
+            {
+              timezone: "America/Rankin_Inlet",
+              city: "Arviat"
+            },
+            {
+              timezone: "America/Resolute",
+              city: "Resolute"
+            },
+            {
+              timezone: "America/Resolute",
+              city: "Grise Fiord"
+            },
+            {
+              timezone: "America/Winnipeg",
+              city: "Winnipeg"
+            },
+            {
+              timezone: "America/Winnipeg",
+              city: "Brandon"
+            },
+            {
+              timezone: "America/Winnipeg",
+              city: "Steinbach"
+            },
+            {
+              timezone: "CST6CDT",
+              city: "Springfield"
+            },
+            {
+              timezone: "CST6CDT",
+              city: "Des Moines"
+            },
+            {
+              timezone: "CST6CDT",
+              city: "Little Rock"
+            },
+            {
+              timezone: "CST6CDT",
+              city: "Baton Rouge"
+            }
           ]
+
         },
         {
           value: "Central Standard Time (Mexico)",
@@ -250,7 +1016,86 @@ export default {
             "America/Merida",
             "America/Mexico_City",
             "America/Monterrey"
+          ],
+          cities: [
+            {
+              timezone: "America/Bahia_Banderas",
+              city: "Puerto Vallarta"
+            },
+            {
+              timezone: "America/Bahia_Banderas",
+              city: "Bahía de Banderas"
+            },
+            {
+              timezone: "America/Bahia_Banderas",
+              city: "Nuevo Vallarta"
+            },
+            {
+              timezone: "America/Cancun",
+              city: "Cancún"
+            },
+            {
+              timezone: "America/Cancun",
+              city: "Playa del Carmen"
+            },
+            {
+              timezone: "America/Cancun",
+              city: "Tulum"
+            },
+            {
+              timezone: "America/Cancun",
+              city: "Cozumel"
+            },
+            {
+              timezone: "America/Merida",
+              city: "Mérida"
+            },
+            {
+              timezone: "America/Merida",
+              city: "Progreso"
+            },
+            {
+              timezone: "America/Merida",
+              city: "Valladolid"
+            },
+            {
+              timezone: "America/Mexico_City",
+              city: "Mexico City"
+            },
+            {
+              timezone: "America/Mexico_City",
+              city: "Puebla"
+            },
+            {
+              timezone: "America/Mexico_City",
+              city: "Toluca"
+            },
+            {
+              timezone: "America/Mexico_City",
+              city: "Cuernavaca"
+            },
+            {
+              timezone: "America/Mexico_City",
+              city: "Querétaro"
+            },
+            {
+              timezone: "America/Monterrey",
+              city: "Monterrey"
+            },
+            {
+              timezone: "America/Monterrey",
+              city: "Saltillo"
+            },
+            {
+              timezone: "America/Monterrey",
+              city: "San Nicolás de los Garza"
+            },
+            {
+              timezone: "America/Monterrey",
+              city: "Guadalupe"
+            }
           ]
+
         },
         {
           value: "Canada Central Standard Time",
@@ -280,7 +1125,98 @@ export default {
             "America/Panama",
             "America/Rio_Branco",
             "Etc/GMT+5"
+          ],
+          cities: [
+            {
+              timezone: "America/Bogota",
+              city: "Bogotá"
+            },
+            {
+              timezone: "America/Bogota",
+              city: "Medellín"
+            },
+            {
+              timezone: "America/Bogota",
+              city: "Cali"
+            },
+            {
+              timezone: "America/Cayman",
+              city: "George Town"
+            },
+            {
+              timezone: "America/Coral_Harbour",
+              city: "Atikokan"
+            },
+            {
+              timezone: "America/Coral_Harbour",
+              city: "Marathon"
+            },
+            {
+              timezone: "America/Eirunepe",
+              city: "Eirunepé"
+            },
+            {
+              timezone: "America/Eirunepe",
+              city: "Envira"
+            },
+            {
+              timezone: "America/Guayaquil",
+              city: "Guayaquil"
+            },
+            {
+              timezone: "America/Guayaquil",
+              city: "Quito"
+            },
+            {
+              timezone: "America/Jamaica",
+              city: "Kingston"
+            },
+            {
+              timezone: "America/Jamaica",
+              city: "Montego Bay"
+            },
+            {
+              timezone: "America/Lima",
+              city: "Lima"
+            },
+            {
+              timezone: "America/Lima",
+              city: "Arequipa"
+            },
+            {
+              timezone: "America/Lima",
+              city: "Trujillo"
+            },
+            {
+              timezone: "America/Panama",
+              city: "Panama City"
+            },
+            {
+              timezone: "America/Panama",
+              city: "Colón"
+            },
+            {
+              timezone: "America/Rio_Branco",
+              city: "Rio Branco"
+            },
+            {
+              timezone: "America/Rio_Branco",
+              city: "Cruzeiro do Sul"
+            },
+            {
+              timezone: "Etc/GMT+5",
+              city: "Leticia"
+            },
+            {
+              timezone: "Etc/GMT+5",
+              city: "Puerto Ayacucho"
+            },
+            {
+              timezone: "Etc/GMT+5",
+              city: "Puerto Leguízamo"
+            }
           ]
+
         },
         {
           value: "Eastern Standard Time",
@@ -305,7 +1241,126 @@ export default {
             "America/Port-au-Prince",
             "America/Thunder_Bay",
             "America/Toronto"
+          ],
+          cities: [
+            {
+              timezone: "America/Detroit",
+              city: "Detroit"
+            },
+            {
+              timezone: "America/Detroit",
+              city: "Ann Arbor"
+            },
+            {
+              timezone: "America/Detroit",
+              city: "Flint"
+            },
+            {
+              timezone: "America/Havana",
+              city: "Havana"
+            },
+            {
+              timezone: "America/Havana",
+              city: "Santiago de Cuba"
+            },
+            {
+              timezone: "America/Indiana/Petersburg",
+              city: "Petersburg"
+            },
+            {
+              timezone: "America/Indiana/Vincennes",
+              city: "Vincennes"
+            },
+            {
+              timezone: "America/Indiana/Winamac",
+              city: "Winamac"
+            },
+            {
+              timezone: "America/Iqaluit",
+              city: "Iqaluit"
+            },
+            {
+              timezone: "America/Iqaluit",
+              city: "Apex"
+            },
+            {
+              timezone: "America/Kentucky/Monticello",
+              city: "Monticello"
+            },
+            {
+              timezone: "America/Louisville",
+              city: "Louisville"
+            },
+            {
+              timezone: "America/Louisville",
+              city: "Jeffersontown"
+            },
+            {
+              timezone: "America/Montreal",
+              city: "Montreal"
+            },
+            {
+              timezone: "America/Nassau",
+              city: "Nassau"
+            },
+            {
+              timezone: "America/New_York",
+              city: "New York"
+            },
+            {
+              timezone: "America/New_York",
+              city: "Philadelphia"
+            },
+            {
+              timezone: "America/New_York",
+              city: "Boston"
+            },
+            {
+              timezone: "America/New_York",
+              city: "Baltimore"
+            },
+            {
+              timezone: "America/New_York",
+              city: "Washington D.C."
+            },
+            {
+              timezone: "America/New_York",
+              city: "Charlotte"
+            },
+            {
+              timezone: "America/Nipigon",
+              city: "Nipigon"
+            },
+            {
+              timezone: "America/Pangnirtung",
+              city: "Pangnirtung"
+            },
+            {
+              timezone: "America/Port-au-Prince",
+              city: "Port-au-Prince"
+            },
+            {
+              timezone: "America/Thunder_Bay",
+              city: "Thunder Bay"
+            },
+            {
+              timezone: "America/Toronto",
+              city: "Toronto"
+            },
+            {
+              timezone: "America/Toronto",
+              city: "Mississauga"
+            },
+            {
+              timezone: "America/Toronto",
+              city: "Ottawa"
+            },
+            {
+              timezone: "America/Toronto",
+              city: "Hamilton"
+            }
           ]
+
         },
         {
           value: "Eastern Daylight Time",
@@ -330,7 +1385,110 @@ export default {
             "America/Port-au-Prince",
             "America/Thunder_Bay",
             "America/Toronto"
+          ],
+          cities: [
+            {
+              timezone: "America/Detroit",
+              city: "Detroit"
+            },
+            {
+              timezone: "America/Havana",
+              city: "Havana"
+            },
+            {
+              timezone: "America/Indiana/Petersburg",
+              city: "Petersburg"
+            },
+            {
+              timezone: "America/Indiana/Vincennes",
+              city: "Vincennes"
+            },
+            {
+              timezone: "America/Indiana/Winamac",
+              city: "Winamac"
+            },
+            {
+              timezone: "America/Iqaluit",
+              city: "Iqaluit"
+            },
+            {
+              timezone: "America/Kentucky/Monticello",
+              city: "Monticello"
+            },
+            {
+              timezone: "America/Louisville",
+              city: "Louisville"
+            },
+            {
+              timezone: "America/Montreal",
+              city: "Montreal"
+            },
+            {
+              timezone: "America/Nassau",
+              city: "Nassau"
+            },
+            {
+              timezone: "America/New_York",
+              city: "New York"
+            },
+            {
+              timezone: "America/New_York",
+              city: "Philadelphia"
+            },
+            {
+              timezone: "America/New_York",
+              city: "Boston"
+            },
+            {
+              timezone: "America/New_York",
+              city: "Washington"
+            },
+            {
+              timezone: "America/New_York",
+              city: "Baltimore"
+            },
+            {
+              timezone: "America/New_York",
+              city: "Atlanta"
+            },
+            {
+              timezone: "America/New_York",
+              city: "Charlotte"
+            },
+            {
+              timezone: "America/Nipigon",
+              city: "Nipigon"
+            },
+            {
+              timezone: "America/Pangnirtung",
+              city: "Pangnirtung"
+            },
+            {
+              timezone: "America/Port-au-Prince",
+              city: "Port-au-Prince"
+            },
+            {
+              timezone: "America/Thunder_Bay",
+              city: "Thunder Bay"
+            },
+            {
+              timezone: "America/Toronto",
+              city: "Toronto"
+            },
+            {
+              timezone: "America/Toronto",
+              city: "Ottawa"
+            },
+            {
+              timezone: "America/Toronto",
+              city: "Mississauga"
+            },
+            {
+              timezone: "America/Toronto",
+              city: "Hamilton"
+            }
           ]
+
         },
         {
           value: "US Eastern Standard Time",
@@ -342,7 +1500,22 @@ export default {
             "America/Indiana/Marengo",
             "America/Indiana/Vevay",
             "America/Indianapolis"
+          ],
+          cities: [
+            {
+              timezone: "America/Indiana/Marengo",
+              city: "Marengo"
+            },
+            {
+              timezone: "America/Indiana/Vevay",
+              city: "Vevay"
+            },
+            {
+              timezone: "America/Indianapolis",
+              city: "Indianapolis"
+            }
           ]
+
         },
         {
           value: "Venezuela Standard Time",
@@ -352,7 +1525,14 @@ export default {
           text: "(UTC-04:30) Caracas",
           utc: [
             "America/Caracas"
+          ],
+          cities: [
+            {
+              timezone: "America/Caracas",
+              city: "Caracas"
+            }
           ]
+
         },
         {
           value: "Paraguay Standard Time",
@@ -362,7 +1542,14 @@ export default {
           text: "(UTC-04:00) Asuncion",
           utc: [
             "America/Asuncion"
+          ],
+          cities: [
+            {
+              timezone: "America/Asuncion",
+              city: "Asunción"
+            }
           ]
+
         },
         {
           value: "Atlantic Standard Time",
@@ -377,7 +1564,50 @@ export default {
             "America/Moncton",
             "America/Thule",
             "Atlantic/Bermuda"
+          ],
+          cities: [
+            {
+              timezone: "America/Glace_Bay",
+              city: "Glace Bay"
+            },
+            {
+              timezone: "America/Goose_Bay",
+              city: "Goose Bay"
+            },
+            {
+              timezone: "America/Halifax",
+              city: "Halifax"
+            },
+            {
+              timezone: "America/Halifax",
+              city: "Dartmouth"
+            },
+            {
+              timezone: "America/Halifax",
+              city: "Truro"
+            },
+            {
+              timezone: "America/Halifax",
+              city: "Sydney (Nova Scotia)"
+            },
+            {
+              timezone: "America/Moncton",
+              city: "Moncton"
+            },
+            {
+              timezone: "America/Moncton",
+              city: "Dieppe"
+            },
+            {
+              timezone: "America/Thule",
+              city: "Qaanaaq"
+            },
+            {
+              timezone: "Atlantic/Bermuda",
+              city: "Hamilton"
+            }
           ]
+
         },
         {
           value: "Central Brazilian Standard Time",
@@ -388,7 +1618,26 @@ export default {
           utc: [
             "America/Campo_Grande",
             "America/Cuiaba"
+          ],
+          cities: [
+            {
+              timezone: "America/Campo_Grande",
+              city: "Campo Grande"
+            },
+            {
+              timezone: "America/Campo_Grande",
+              city: "Dourados"
+            },
+            {
+              timezone: "America/Cuiaba",
+              city: "Cuiabá"
+            },
+            {
+              timezone: "America/Cuiaba",
+              city: "Várzea Grande"
+            }
           ]
+
         },
         {
           value: "SA Western Standard Time",
@@ -427,7 +1676,42 @@ export default {
             "America/St_Vincent",
             "America/Tortola",
             "Etc/GMT+4"
+          ],
+          cities: [
+            {timezone: "America/Anguilla", city: "The Valley"},
+            {timezone: "America/Antigua", city: "St. John's"},
+            {timezone: "America/Aruba", city: "Oranjestad"},
+            {timezone: "America/Barbados", city: "Bridgetown"},
+            {timezone: "America/Blanc-Sablon", city: "Blanc-Sablon"},
+            {timezone: "America/Boa_Vista", city: "Boa Vista"},
+            {timezone: "America/Curacao", city: "Willemstad"},
+            {timezone: "America/Dominica", city: "Roseau"},
+            {timezone: "America/Grand_Turk", city: "Cockburn Town"},
+            {timezone: "America/Grenada", city: "St. George's"},
+            {timezone: "America/Guadeloupe", city: "Basse-Terre"},
+            {timezone: "America/Guyana", city: "Georgetown"},
+            {timezone: "America/Kralendijk", city: "Kralendijk"},
+            {timezone: "America/La_Paz", city: "La Paz"},
+            {timezone: "America/Lower_Princes", city: "Lower Prince's Quarter"},
+            {timezone: "America/Manaus", city: "Manaus"},
+            {timezone: "America/Manaus", city: "Itacoatiara"},
+            {timezone: "America/Porto_Velho", city: "Porto Velho"},
+            {timezone: "America/Marigot", city: "Marigot"},
+            {timezone: "America/Martinique", city: "Fort-de-France"},
+            {timezone: "America/Montserrat", city: "Plymouth"},
+            {timezone: "America/Montserrat", city: "Brades"},
+            {timezone: "America/Port_of_Spain", city: "Port of Spain"},
+            {timezone: "America/Puerto_Rico", city: "San Juan"},
+            {timezone: "America/Santo_Domingo", city: "Santo Domingo"},
+            {timezone: "America/St_Barthelemy", city: "Gustavia"},
+            {timezone: "America/St_Kitts", city: "Basseterre"},
+            {timezone: "America/St_Lucia", city: "Castries"},
+            {timezone: "America/St_Thomas", city: "Charlotte Amalie"},
+            {timezone: "America/St_Vincent", city: "Kingstown"},
+            {timezone: "America/Tortola", city: "Road Town"},
+            {timezone: "Etc/GMT+4", city: "GMT+4 Reference Zone"}
           ]
+
         },
         {
           value: "Pacific SA Standard Time",
@@ -438,7 +1722,22 @@ export default {
           utc: [
             "America/Santiago",
             "Antarctica/Palmer"
+          ],
+          cities: [
+            {
+              timezone: "America/Santiago",
+              city: "Santiago"
+            },
+            {
+              timezone: "America/Santiago",
+              city: "Valparaíso"
+            },
+            {
+              timezone: "Antarctica/Palmer",
+              city: "Palmer Station"
+            }
           ]
+
         },
         {
           value: "Newfoundland Standard Time",
@@ -448,7 +1747,18 @@ export default {
           text: "(UTC-03:30) Newfoundland",
           utc: [
             "America/St_Johns"
+          ],
+          cities: [
+            {
+              timezone: "America/St_Johns",
+              city: "St. John's"
+            },
+            {
+              timezone: "America/St_Johns",
+              city: "Mount Pearl"
+            }
           ]
+
         },
         {
           value: "E. South America Standard Time",
@@ -458,7 +1768,30 @@ export default {
           text: "(UTC-03:00) Brasilia",
           utc: [
             "America/Sao_Paulo"
+          ],
+          cities: [
+            {
+              timezone: "America/Sao_Paulo",
+              city: "São Paulo"
+            },
+            {
+              timezone: "America/Sao_Paulo",
+              city: "Rio de Janeiro"
+            },
+            {
+              timezone: "America/Sao_Paulo",
+              city: "Belo Horizonte"
+            },
+            {
+              timezone: "America/Sao_Paulo",
+              city: "Brasília"
+            },
+            {
+              timezone: "America/Sao_Paulo",
+              city: "Campinas"
+            }
           ]
+
         },
         {
           value: "Argentina Standard Time",
@@ -484,7 +1817,78 @@ export default {
             "America/Cordoba",
             "America/Jujuy",
             "America/Mendoza"
+          ],
+          cities: [
+            {
+              timezone: "America/Argentina/Buenos_Aires",
+              city: "Buenos Aires"
+            },
+            {
+              timezone: "America/Argentina/Catamarca",
+              city: "San Fernando del Valle de Catamarca"
+            },
+            {
+              timezone: "America/Argentina/Cordoba",
+              city: "Córdoba"
+            },
+            {
+              timezone: "America/Argentina/Jujuy",
+              city: "San Salvador de Jujuy"
+            },
+            {
+              timezone: "America/Argentina/La_Rioja",
+              city: "La Rioja"
+            },
+            {
+              timezone: "America/Argentina/Mendoza",
+              city: "Mendoza"
+            },
+            {
+              timezone: "America/Argentina/Rio_Gallegos",
+              city: "Río Gallegos"
+            },
+            {
+              timezone: "America/Argentina/Salta",
+              city: "Salta"
+            },
+            {
+              timezone: "America/Argentina/San_Juan",
+              city: "San Juan"
+            },
+            {
+              timezone: "America/Argentina/San_Luis",
+              city: "San Luis"
+            },
+            {
+              timezone: "America/Argentina/Tucuman",
+              city: "San Miguel de Tucumán"
+            },
+            {
+              timezone: "America/Argentina/Ushuaia",
+              city: "Ushuaia"
+            },
+            {
+              timezone: "America/Buenos_Aires",
+              city: "Buenos Aires"
+            },
+            {
+              timezone: "America/Catamarca",
+              city: "San Fernando del Valle de Catamarca"
+            },
+            {
+              timezone: "America/Cordoba",
+              city: "Córdoba"
+            },
+            {
+              timezone: "America/Jujuy",
+              city: "San Salvador de Jujuy"
+            },
+            {
+              timezone: "America/Mendoza",
+              city: "Mendoza"
+            }
           ]
+
         },
         {
           value: "SA Eastern Standard Time",
@@ -504,7 +1908,54 @@ export default {
             "Antarctica/Rothera",
             "Atlantic/Stanley",
             "Etc/GMT+3"
+          ],
+          cities: [
+            {
+              timezone: "America/Araguaina",
+              city: "Araguaína"
+            },
+            {
+              timezone: "America/Belem",
+              city: "Belém"
+            },
+            {
+              timezone: "America/Cayenne",
+              city: "Cayenne"
+            },
+            {
+              timezone: "America/Fortaleza",
+              city: "Fortaleza"
+            },
+            {
+              timezone: "America/Maceio",
+              city: "Maceió"
+            },
+            {
+              timezone: "America/Paramaribo",
+              city: "Paramaribo"
+            },
+            {
+              timezone: "America/Recife",
+              city: "Recife"
+            },
+            {
+              timezone: "America/Santarem",
+              city: "Santarém"
+            },
+            {
+              timezone: "Antarctica/Rothera",
+              city: "Rothera Research Station"
+            },
+            {
+              timezone: "Atlantic/Stanley",
+              city: "Stanley"
+            },
+            {
+              timezone: "Etc/GMT+3",
+              city: "Generic GMT+3 Zone"
+            }
           ]
+
         },
         {
           value: "Greenland Standard Time",
@@ -514,6 +1965,12 @@ export default {
           text: "(UTC-03:00) Greenland",
           utc: [
             "America/Godthab"
+          ],
+          cities: [
+            {
+              timezone: "America/Godthab",
+              city: "Nuuk"
+            }
           ]
         },
         {
@@ -524,7 +1981,14 @@ export default {
           text: "(UTC-03:00) Montevideo",
           utc: [
             "America/Montevideo"
+          ],
+          cities: [
+            {
+              timezone: "America/Montevideo",
+              city: "Montevideo"
+            }
           ]
+
         },
         {
           value: "Bahia Standard Time",
@@ -534,7 +1998,22 @@ export default {
           text: "(UTC-03:00) Salvador",
           utc: [
             "America/Bahia"
+          ],
+          cities: [
+            {
+              timezone: "America/Bahia",
+              city: "Salvador"
+            },
+            {
+              timezone: "America/Bahia",
+              city: "Feira de Santana"
+            },
+            {
+              timezone: "America/Bahia",
+              city: "Vitória da Conquista"
+            }
           ]
+
         },
         {
           value: "UTC-02",
@@ -546,7 +2025,22 @@ export default {
             "America/Noronha",
             "Atlantic/South_Georgia",
             "Etc/GMT+2"
+          ],
+          cities: [
+            {
+              timezone: "America/Noronha",
+              city: "Fernando de Noronha"
+            },
+            {
+              timezone: "Atlantic/South_Georgia",
+              city: "King Edward Point"
+            },
+            {
+              timezone: "Etc/GMT+2",
+              city: "Generic GMT+2 Zone"
+            }
           ]
+
         },
         {
           value: "Mid-Atlantic Standard Time",
@@ -554,7 +2048,17 @@ export default {
           offset: -1,
           isdst: true,
           text: "(UTC-02:00) Mid-Atlantic - Old",
-          utc: []
+          utc: [],
+          cities: [
+            {
+              timezone: "Atlantic/South_Georgia",
+              city: "Cape Verde"
+            },
+            {
+              timezone: "Atlantic/South_Georgia",
+              city: "South Georgia"
+            }
+          ]
         },
         {
           value: "Azores Standard Time",
@@ -565,7 +2069,26 @@ export default {
           utc: [
             "America/Scoresbysund",
             "Atlantic/Azores"
+          ],
+          cities: [
+            {
+              timezone: "America/Scoresbysund",
+              city: "Ittoqqortoormiit"
+            },
+            {
+              timezone: "Atlantic/Azores",
+              city: "Ponta Delgada"
+            },
+            {
+              timezone: "Atlantic/Azores",
+              city: "Angra do Heroísmo"
+            },
+            {
+              timezone: "Atlantic/Azores",
+              city: "Horta"
+            }
           ]
+
         },
         {
           value: "Cape Verde Standard Time",
@@ -576,7 +2099,26 @@ export default {
           utc: [
             "Atlantic/Cape_Verde",
             "Etc/GMT+1"
+          ],
+          cities: [
+            {
+              timezone: "America/Scoresbysund",
+              city: "Ittoqqortoormiit"
+            },
+            {
+              timezone: "Atlantic/Azores",
+              city: "Ponta Delgada"
+            },
+            {
+              timezone: "Atlantic/Azores",
+              city: "Angra do Heroísmo"
+            },
+            {
+              timezone: "Atlantic/Azores",
+              city: "Horta"
+            }
           ]
+
         },
         {
           value: "Morocco Standard Time",
@@ -587,7 +2129,18 @@ export default {
           utc: [
             "Africa/Casablanca",
             "Africa/El_Aaiun"
+          ],
+          cities: [
+            {
+              timezone: "Africa/Casablanca",
+              city: "Casablanca"
+            },
+            {
+              timezone: "Africa/El_Aaiun",
+              city: "El Aaiún"
+            }
           ]
+
         },
         {
           value: "UTC",
@@ -598,7 +2151,18 @@ export default {
           utc: [
             "America/Danmarkshavn",
             "Etc/GMT"
+          ],
+          cities: [
+            {
+              timezone: "America/Danmarkshavn",
+              city: "Danmarkshavn"
+            },
+            {
+              timezone: "Etc/GMT",
+              city: "Generic GMT Zone"
+            }
           ]
+
         },
         {
           value: "GMT Standard Time",
@@ -611,7 +2175,26 @@ export default {
             "Europe/Guernsey",
             "Europe/Jersey",
             "Europe/London"
+          ],
+          cities: [
+            {
+              timezone: "Europe/Isle_of_Man",
+              city: "Douglas"
+            },
+            {
+              timezone: "Europe/Guernsey",
+              city: "St. Peter Port"
+            },
+            {
+              timezone: "Europe/Jersey",
+              city: "Saint Helier"
+            },
+            {
+              timezone: "Europe/London",
+              city: "London"
+            }
           ]
+
         },
         {
           value: "British Summer Time",
@@ -624,7 +2207,8 @@ export default {
             "Europe/Guernsey",
             "Europe/Jersey",
             "Europe/London"
-          ]
+          ],
+          cities: []
         },
         {
           value: "GMT Standard Time",
@@ -638,7 +2222,30 @@ export default {
             "Atlantic/Madeira",
             "Europe/Dublin",
             "Europe/Lisbon"
+          ],
+          cities: [
+            {
+              timezone: "Atlantic/Canary",
+              city: "Las Palmas de Gran Canaria"
+            },
+            {
+              timezone: "Atlantic/Faeroe",
+              city: "Tórshavn"
+            },
+            {
+              timezone: "Atlantic/Madeira",
+              city: "Funchal"
+            },
+            {
+              timezone: "Europe/Dublin",
+              city: "Dublin"
+            },
+            {
+              timezone: "Europe/Lisbon",
+              city: "Lisbon"
+            }
           ]
+
         },
         {
           value: "Greenwich Standard Time",
@@ -662,7 +2269,70 @@ export default {
             "Africa/Sao_Tome",
             "Atlantic/Reykjavik",
             "Atlantic/St_Helena"
+          ],
+          cities: [
+            {
+              timezone: "Africa/Abidjan",
+              city: "Abidjan"
+            },
+            {
+              timezone: "Africa/Accra",
+              city: "Accra"
+            },
+            {
+              timezone: "Africa/Bamako",
+              city: "Bamako"
+            },
+            {
+              timezone: "Africa/Banjul",
+              city: "Banjul"
+            },
+            {
+              timezone: "Africa/Bissau",
+              city: "Bissau"
+            },
+            {
+              timezone: "Africa/Conakry",
+              city: "Conakry"
+            },
+            {
+              timezone: "Africa/Dakar",
+              city: "Dakar"
+            },
+            {
+              timezone: "Africa/Freetown",
+              city: "Freetown"
+            },
+            {
+              timezone: "Africa/Lome",
+              city: "Lomé"
+            },
+            {
+              timezone: "Africa/Monrovia",
+              city: "Monrovia"
+            },
+            {
+              timezone: "Africa/Nouakchott",
+              city: "Nouakchott"
+            },
+            {
+              timezone: "Africa/Ouagadougou",
+              city: "Ouagadougou"
+            },
+            {
+              timezone: "Africa/Sao_Tome",
+              city: "São Tomé"
+            },
+            {
+              timezone: "Atlantic/Reykjavik",
+              city: "Reykjavík"
+            },
+            {
+              timezone: "Atlantic/St_Helena",
+              city: "Jamestown"
+            }
           ]
+
         },
         {
           value: "W. Europe Standard Time",
@@ -688,7 +2358,78 @@ export default {
             "Europe/Vatican",
             "Europe/Vienna",
             "Europe/Zurich"
+          ],
+          cities: [
+            {
+              timezone: "Arctic/Longyearbyen",
+              city: "Longyearbyen"
+            },
+            {
+              timezone: "Europe/Amsterdam",
+              city: "Amsterdam"
+            },
+            {
+              timezone: "Europe/Andorra",
+              city: "Andorra la Vella"
+            },
+            {
+              timezone: "Europe/Berlin",
+              city: "Berlin"
+            },
+            {
+              timezone: "Europe/Busingen",
+              city: "Büsingen"
+            },
+            {
+              timezone: "Europe/Gibraltar",
+              city: "Gibraltar"
+            },
+            {
+              timezone: "Europe/Luxembourg",
+              city: "Luxembourg"
+            },
+            {
+              timezone: "Europe/Malta",
+              city: "Valletta"
+            },
+            {
+              timezone: "Europe/Monaco",
+              city: "Monaco"
+            },
+            {
+              timezone: "Europe/Oslo",
+              city: "Oslo"
+            },
+            {
+              timezone: "Europe/Rome",
+              city: "Rome"
+            },
+            {
+              timezone: "Europe/San_Marino",
+              city: "San Marino"
+            },
+            {
+              timezone: "Europe/Stockholm",
+              city: "Stockholm"
+            },
+            {
+              timezone: "Europe/Vaduz",
+              city: "Vaduz"
+            },
+            {
+              timezone: "Europe/Vatican",
+              city: "Vatican City"
+            },
+            {
+              timezone: "Europe/Vienna",
+              city: "Vienna"
+            },
+            {
+              timezone: "Europe/Zurich",
+              city: "Zurich"
+            }
           ]
+
         },
         {
           value: "Central Europe Standard Time",
@@ -704,7 +2445,38 @@ export default {
             "Europe/Podgorica",
             "Europe/Prague",
             "Europe/Tirane"
+          ],
+          cities: [
+            {
+              timezone: "Europe/Belgrade",
+              city: "Belgrade"
+            },
+            {
+              timezone: "Europe/Bratislava",
+              city: "Bratislava"
+            },
+            {
+              timezone: "Europe/Budapest",
+              city: "Budapest"
+            },
+            {
+              timezone: "Europe/Ljubljana",
+              city: "Ljubljana"
+            },
+            {
+              timezone: "Europe/Podgorica",
+              city: "Podgorica"
+            },
+            {
+              timezone: "Europe/Prague",
+              city: "Prague"
+            },
+            {
+              timezone: "Europe/Tirane",
+              city: "Tirana"
+            }
           ]
+
         },
         {
           value: "Romance Standard Time",
@@ -718,7 +2490,30 @@ export default {
             "Europe/Copenhagen",
             "Europe/Madrid",
             "Europe/Paris"
+          ],
+          cities: [
+            {
+              timezone: "Africa/Ceuta",
+              city: "Ceuta"
+            },
+            {
+              timezone: "Europe/Brussels",
+              city: "Brussels"
+            },
+            {
+              timezone: "Europe/Copenhagen",
+              city: "Copenhagen"
+            },
+            {
+              timezone: "Europe/Madrid",
+              city: "Madrid"
+            },
+            {
+              timezone: "Europe/Paris",
+              city: "Paris"
+            }
           ]
+
         },
         {
           value: "Central European Standard Time",
@@ -731,7 +2526,26 @@ export default {
             "Europe/Skopje",
             "Europe/Warsaw",
             "Europe/Zagreb"
+          ],
+          cities: [
+            {
+              timezone: "Europe/Sarajevo",
+              city: "Sarajevo"
+            },
+            {
+              timezone: "Europe/Skopje",
+              city: "Skopje"
+            },
+            {
+              timezone: "Europe/Warsaw",
+              city: "Warsaw"
+            },
+            {
+              timezone: "Europe/Zagreb",
+              city: "Zagreb"
+            }
           ]
+
         },
         {
           value: "W. Central Africa Standard Time",
@@ -754,7 +2568,66 @@ export default {
             "Africa/Porto-Novo",
             "Africa/Tunis",
             "Etc/GMT-1"
+          ],
+          cities: [
+            {
+              timezone: "Africa/Algiers",
+              city: "Algiers"
+            },
+            {
+              timezone: "Africa/Bangui",
+              city: "Bangui"
+            },
+            {
+              timezone: "Africa/Brazzaville",
+              city: "Brazzaville"
+            },
+            {
+              timezone: "Africa/Douala",
+              city: "Douala"
+            },
+            {
+              timezone: "Africa/Kinshasa",
+              city: "Kinshasa"
+            },
+            {
+              timezone: "Africa/Lagos",
+              city: "Lagos"
+            },
+            {
+              timezone: "Africa/Libreville",
+              city: "Libreville"
+            },
+            {
+              timezone: "Africa/Luanda",
+              city: "Luanda"
+            },
+            {
+              timezone: "Africa/Malabo",
+              city: "Malabo"
+            },
+            {
+              timezone: "Africa/Ndjamena",
+              city: "N'Djamena"
+            },
+            {
+              timezone: "Africa/Niamey",
+              city: "Niamey"
+            },
+            {
+              timezone: "Africa/Porto-Novo",
+              city: "Porto-Novo"
+            },
+            {
+              timezone: "Africa/Tunis",
+              city: "Tunis"
+            },
+            {
+              timezone: "Etc/GMT-1",
+              city: "GMT-1"
+            }
           ]
+
         },
         {
           value: "Namibia Standard Time",
@@ -764,7 +2637,14 @@ export default {
           text: "(UTC+01:00) Windhoek",
           utc: [
             "Africa/Windhoek"
+          ],
+          cities: [
+            {
+              timezone: "Africa/Windhoek",
+              city: "Windhoek"
+            }
           ]
+
         },
         {
           value: "GTB Standard Time",
@@ -777,7 +2657,26 @@ export default {
             "Europe/Athens",
             "Europe/Bucharest",
             "Europe/Chisinau"
+          ],
+          cities: [
+            {
+              timezone: "Asia/Nicosia",
+              city: "Nicosia"
+            },
+            {
+              timezone: "Europe/Athens",
+              city: "Athens"
+            },
+            {
+              timezone: "Europe/Bucharest",
+              city: "Bucharest"
+            },
+            {
+              timezone: "Europe/Chisinau",
+              city: "Chisinau"
+            }
           ]
+
         },
         {
           value: "Middle East Standard Time",
@@ -787,7 +2686,14 @@ export default {
           text: "(UTC+02:00) Beirut",
           utc: [
             "Asia/Beirut"
+          ],
+          cities: [
+            {
+              timezone: "Asia/Beirut",
+              city: "Beirut"
+            }
           ]
+
         },
         {
           value: "Egypt Standard Time",
@@ -797,7 +2703,14 @@ export default {
           text: "(UTC+02:00) Cairo",
           utc: [
             "Africa/Cairo"
+          ],
+          cities: [
+            {
+              timezone: "Africa/Cairo",
+              city: "Cairo"
+            }
           ]
+
         },
         {
           value: "Syria Standard Time",
@@ -807,7 +2720,14 @@ export default {
           text: "(UTC+02:00) Damascus",
           utc: [
             "Asia/Damascus"
+          ],
+          cities: [
+            {
+              timezone: "Asia/Damascus",
+              city: "Damascus"
+            }
           ]
+
         },
         {
           value: "E. Europe Standard Time",
@@ -829,7 +2749,22 @@ export default {
             "Europe/Tallinn",
             "Europe/Vilnius"
 
+          ],
+          cities: [
+            {timezone: "Asia/Nicosia", city: "Nicosia"},
+            {timezone: "Europe/Athens", city: "Athens"},
+            {timezone: "Europe/Bucharest", city: "Bucharest"},
+            {timezone: "Europe/Chisinau", city: "Chisinau"},
+            {timezone: "Europe/Helsinki", city: "Helsinki"},
+            {timezone: "Europe/Kyiv", city: "Kyiv"},
+            {timezone: "Europe/Mariehamn", city: "Mariehamn"},
+            {timezone: "Europe/Nicosia", city: "Nicosia"},
+            {timezone: "Europe/Riga", city: "Riga"},
+            {timezone: "Europe/Sofia", city: "Sofia"},
+            {timezone: "Europe/Tallinn", city: "Tallinn"},
+            {timezone: "Europe/Vilnius", city: "Vilnius"}
           ]
+
         },
         {
           value: "South Africa Standard Time",
@@ -850,7 +2785,22 @@ export default {
             "Africa/Maseru",
             "Africa/Mbabane",
             "Etc/GMT-2"
+          ],
+          cities: [
+            {timezone: "Africa/Blantyre", city: "Blantyre"},
+            {timezone: "Africa/Bujumbura", city: "Bujumbura"},
+            {timezone: "Africa/Gaborone", city: "Gaborone"},
+            {timezone: "Africa/Harare", city: "Harare"},
+            {timezone: "Africa/Johannesburg", city: "Johannesburg"},
+            {timezone: "Africa/Kigali", city: "Kigali"},
+            {timezone: "Africa/Lubumbashi", city: "Lubumbashi"},
+            {timezone: "Africa/Lusaka", city: "Lusaka"},
+            {timezone: "Africa/Maputo", city: "Maputo"},
+            {timezone: "Africa/Maseru", city: "Maseru"},
+            {timezone: "Africa/Mbabane", city: "Mbabane"},
+            {timezone: "Etc/GMT-2", city: "GMT-2 Offset"}
           ]
+
         },
         {
           value: "FLE Standard Time",
@@ -866,7 +2816,17 @@ export default {
             "Europe/Sofia",
             "Europe/Tallinn",
             "Europe/Vilnius"
+          ],
+          cities: [
+            {timezone: "Europe/Helsinki", city: "Helsinki"},
+            {timezone: "Europe/Kyiv", city: "Kyiv"},
+            {timezone: "Europe/Mariehamn", city: "Mariehamn"},
+            {timezone: "Europe/Riga", city: "Riga"},
+            {timezone: "Europe/Sofia", city: "Sofia"},
+            {timezone: "Europe/Tallinn", city: "Tallinn"},
+            {timezone: "Europe/Vilnius", city: "Vilnius"}
           ]
+
         },
         {
           value: "Turkey Standard Time",
@@ -876,6 +2836,9 @@ export default {
           text: "(UTC+03:00) Istanbul",
           utc: [
             "Europe/Istanbul"
+          ],
+          cities: [
+            {timezone: "Europe/Istanbul", city: "Istanbul"}
           ]
         },
         {
@@ -886,6 +2849,9 @@ export default {
           text: "(UTC+02:00) Jerusalem",
           utc: [
             "Asia/Jerusalem"
+          ],
+          cities: [
+            {timezone: "Asia/Jerusalem", city: "Jerusalem"}
           ]
         },
         {
@@ -896,6 +2862,9 @@ export default {
           text: "(UTC+02:00) Tripoli",
           utc: [
             "Africa/Tripoli"
+          ],
+          cities: [
+            {timezone: "Africa/Tripoli", city: "Tripoli"}
           ]
         },
         {
@@ -906,7 +2875,11 @@ export default {
           text: "(UTC+03:00) Amman",
           utc: [
             "Asia/Amman"
+          ],
+          cities: [
+            {timezone: "Asia/Amman", city: "Amman"}
           ]
+
         },
         {
           value: "Arabic Standard Time",
@@ -916,7 +2889,11 @@ export default {
           text: "(UTC+03:00) Baghdad",
           utc: [
             "Asia/Baghdad"
+          ],
+          cities: [
+            {timezone: "Asia/Baghdad", city: "Baghdad"}
           ]
+
         },
         {
           value: "Kaliningrad Standard Time",
@@ -926,7 +2903,11 @@ export default {
           text: "(UTC+02:00) Kaliningrad",
           utc: [
             "Europe/Kaliningrad"
+          ],
+          cities: [
+            {timezone: "Europe/Kaliningrad", city: "Kaliningrad"}
           ]
+
         },
         {
           value: "Arab Standard Time",
@@ -940,7 +2921,15 @@ export default {
             "Asia/Kuwait",
             "Asia/Qatar",
             "Asia/Riyadh"
+          ],
+          cities: [
+            {timezone: "Asia/Aden", city: "Aden"},
+            {timezone: "Asia/Bahrain", city: "Manama"},
+            {timezone: "Asia/Kuwait", city: "Kuwait City"},
+            {timezone: "Asia/Qatar", city: "Doha"},
+            {timezone: "Asia/Riyadh", city: "Riyadh"}
           ]
+
         },
         {
           value: "E. Africa Standard Time",
@@ -963,7 +2952,24 @@ export default {
             "Indian/Antananarivo",
             "Indian/Comoro",
             "Indian/Mayotte"
+          ],
+          cities: [
+            {timezone: "Africa/Addis_Ababa", city: "Addis Ababa"},
+            {timezone: "Africa/Asmera", city: "Asmara"},
+            {timezone: "Africa/Dar_es_Salaam", city: "Dar es Salaam"},
+            {timezone: "Africa/Djibouti", city: "Djibouti"},
+            {timezone: "Africa/Juba", city: "Juba"},
+            {timezone: "Africa/Kampala", city: "Kampala"},
+            {timezone: "Africa/Khartoum", city: "Khartoum"},
+            {timezone: "Africa/Mogadishu", city: "Mogadishu"},
+            {timezone: "Africa/Nairobi", city: "Nairobi"},
+            {timezone: "Antarctica/Syowa", city: "Syowa Station"},
+            {timezone: "Etc/GMT-3", city: "GMT-3"},
+            {timezone: "Indian/Antananarivo", city: "Antananarivo"},
+            {timezone: "Indian/Comoro", city: "Moroni"},
+            {timezone: "Indian/Mayotte", city: "Mamoudzou"}
           ]
+
         },
         {
           value: "Moscow Standard Time",
@@ -977,6 +2983,13 @@ export default {
             "Europe/Simferopol",
             "Europe/Volgograd",
             "Europe/Minsk"
+          ],
+          cities: [
+            {timezone: "Europe/Kirov", city: "Kirov"},
+            {timezone: "Europe/Moscow", city: "Moscow"},
+            {timezone: "Europe/Simferopol", city: "Simferopol"},
+            {timezone: "Europe/Volgograd", city: "Volgograd"},
+            {timezone: "Europe/Minsk", city: "Minsk"}
           ]
         },
         {
@@ -989,7 +3002,13 @@ export default {
             "Europe/Astrakhan",
             "Europe/Samara",
             "Europe/Ulyanovsk"
+          ],
+          cities: [
+            {timezone: "Europe/Astrakhan", city: "Astrakhan"},
+            {timezone: "Europe/Samara", city: "Samara"},
+            {timezone: "Europe/Ulyanovsk", city: "Ulyanovsk"}
           ]
+
         },
         {
           value: "Iran Standard Time",
@@ -999,6 +3018,9 @@ export default {
           text: "(UTC+03:30) Tehran",
           utc: [
             "Asia/Tehran"
+          ],
+          cities: [
+            {timezone: "Asia/Tehran", city: "Tehran"}
           ]
         },
         {
@@ -1011,7 +3033,13 @@ export default {
             "Asia/Dubai",
             "Asia/Muscat",
             "Etc/GMT-4"
+          ],
+          cities: [
+            {timezone: "Asia/Dubai", city: "Dubai"},
+            {timezone: "Asia/Muscat", city: "Muscat"},
+            {timezone: "Etc/GMT-4", city: "GMT-4 (no specific city)"}
           ]
+
         },
         {
           value: "Azerbaijan Standard Time",
@@ -1021,6 +3049,9 @@ export default {
           text: "(UTC+04:00) Baku",
           utc: [
             "Asia/Baku"
+          ],
+          cities: [
+            {timezone: "Asia/Baku", city: "Baku"}
           ]
         },
         {
@@ -1033,7 +3064,13 @@ export default {
             "Indian/Mahe",
             "Indian/Mauritius",
             "Indian/Reunion"
+          ],
+          cities: [
+            {timezone: "Indian/Mahe", city: "Victoria"},
+            {timezone: "Indian/Mauritius", city: "Port Louis"},
+            {timezone: "Indian/Reunion", city: "Saint-Denis"}
           ]
+
         },
         {
           value: "Georgian Standard Time",
@@ -1043,7 +3080,11 @@ export default {
           text: "(UTC+04:00) Tbilisi",
           utc: [
             "Asia/Tbilisi"
+          ],
+          cities: [
+            {timezone: "Asia/Tbilisi", city: "Tbilisi"}
           ]
+
         },
         {
           value: "Caucasus Standard Time",
@@ -1053,7 +3094,11 @@ export default {
           text: "(UTC+04:00) Yerevan",
           utc: [
             "Asia/Yerevan"
+          ],
+          cities: [
+            {timezone: "Asia/Yerevan", city: "Yerevan"}
           ]
+
         },
         {
           value: "Afghanistan Standard Time",
@@ -1063,6 +3108,9 @@ export default {
           text: "(UTC+04:30) Kabul",
           utc: [
             "Asia/Kabul"
+          ],
+          cities: [
+            {timezone: "Asia/Kabul", city: "Kabul"}
           ]
         },
         {
@@ -1083,7 +3131,21 @@ export default {
             "Etc/GMT-5",
             "Indian/Kerguelen",
             "Indian/Maldives"
+          ],
+          cities: [
+            {timezone: "Antarctica/Mawson", city: "Mawson Station"},
+            {timezone: "Asia/Aqtau", city: "Aqtau"},
+            {timezone: "Asia/Aqtobe", city: "Aqtobe"},
+            {timezone: "Asia/Ashgabat", city: "Ashgabat"},
+            {timezone: "Asia/Dushanbe", city: "Dushanbe"},
+            {timezone: "Asia/Oral", city: "Oral"},
+            {timezone: "Asia/Samarkand", city: "Samarkand"},
+            {timezone: "Asia/Tashkent", city: "Tashkent"},
+            {timezone: "Etc/GMT-5", city: "UTC+5"},
+            {timezone: "Indian/Kerguelen", city: "Port-aux-Français"},
+            {timezone: "Indian/Maldives", city: "Malé"}
           ]
+
         },
         {
           value: "Yekaterinburg Time",
@@ -1093,7 +3155,11 @@ export default {
           text: "(UTC+05:00) Yekaterinburg",
           utc: [
             "Asia/Yekaterinburg"
+          ],
+          cities: [
+            {timezone: "Asia/Yekaterinburg", city: "Yekaterinburg"}
           ]
+
         },
         {
           value: "Pakistan Standard Time",
@@ -1103,7 +3169,11 @@ export default {
           text: "(UTC+05:00) Islamabad, Karachi",
           utc: [
             "Asia/Karachi"
+          ],
+          cities: [
+            {timezone: "Asia/Karachi", city: "Karachi"}
           ]
+
         },
         {
           value: "India Standard Time",
@@ -1114,7 +3184,12 @@ export default {
           utc: [
             "Asia/Kolkata",
             "Asia/Calcutta"
+          ],
+          cities: [
+            {timezone: "Asia/Kolkata", city: "Kolkata"},
+            {timezone: "Asia/Calcutta", city: "Calcutta"}
           ]
+
         },
         {
           value: "Sri Lanka Standard Time",
@@ -1124,7 +3199,11 @@ export default {
           text: "(UTC+05:30) Sri Jayawardenepura",
           utc: [
             "Asia/Colombo"
+          ],
+          cities: [
+            {timezone: "Asia/Colombo", city: "Colombo"}
           ]
+
         },
         {
           value: "Nepal Standard Time",
@@ -1134,7 +3213,11 @@ export default {
           text: "(UTC+05:45) Kathmandu",
           utc: [
             "Asia/Kathmandu"
+          ],
+          cities: [
+            {timezone: "Asia/Kathmandu", city: "Kathmandu"}
           ]
+
         },
         {
           value: "Central Asia Standard Time",
@@ -1150,7 +3233,17 @@ export default {
             "Asia/Urumqi",
             "Etc/GMT-6",
             "Indian/Chagos"
+          ],
+          cities: [
+            {timezone: "Antarctica/Vostok", city: "Vostok Station"},
+            {timezone: "Asia/Almaty", city: "Almaty"},
+            {timezone: "Asia/Bishkek", city: "Bishkek"},
+            {timezone: "Asia/Qyzylorda", city: "Qyzylorda"},
+            {timezone: "Asia/Urumqi", city: "Urumqi"},
+            {timezone: "Etc/GMT-6", city: "GMT-6"},
+            {timezone: "Indian/Chagos", city: "Diego Garcia"}
           ]
+
         },
         {
           value: "Bangladesh Standard Time",
@@ -1161,7 +3254,12 @@ export default {
           utc: [
             "Asia/Dhaka",
             "Asia/Thimphu"
+          ],
+          cities: [
+            {timezone: "Asia/Dhaka", city: "Dhaka"},
+            {timezone: "Asia/Thimphu", city: "Thimphu"}
           ]
+
         },
         {
           value: "Myanmar Standard Time",
@@ -1172,7 +3270,12 @@ export default {
           utc: [
             "Asia/Rangoon",
             "Indian/Cocos"
+          ],
+          cities: [
+            {timezone: "Asia/Rangoon", city: "Yangon"},
+            {timezone: "Indian/Cocos", city: "West Island"}
           ]
+
         },
         {
           value: "SE Asia Standard Time",
@@ -1191,7 +3294,20 @@ export default {
             "Asia/Vientiane",
             "Etc/GMT-7",
             "Indian/Christmas"
+          ],
+          cities: [
+            {timezone: "Antarctica/Davis", city: "Davis Station"},
+            {timezone: "Asia/Bangkok", city: "Bangkok"},
+            {timezone: "Asia/Hovd", city: "Hovd"},
+            {timezone: "Asia/Jakarta", city: "Jakarta"},
+            {timezone: "Asia/Phnom_Penh", city: "Phnom Penh"},
+            {timezone: "Asia/Pontianak", city: "Pontianak"},
+            {timezone: "Asia/Saigon", city: "Ho Chi Minh City"},
+            {timezone: "Asia/Vientiane", city: "Vientiane"},
+            {timezone: "Etc/GMT-7", city: "GMT-7"},
+            {timezone: "Indian/Christmas", city: "Flying Fish Cove"}
           ]
+
         },
         {
           value: "N. Central Asia Standard Time",
@@ -1204,7 +3320,14 @@ export default {
             "Asia/Novosibirsk",
             "Asia/Omsk",
             "Asia/Tomsk"
+          ],
+          cities: [
+            {timezone: "Asia/Novokuznetsk", city: "Novokuznetsk"},
+            {timezone: "Asia/Novosibirsk", city: "Novosibirsk"},
+            {timezone: "Asia/Omsk", city: "Omsk"},
+            {timezone: "Asia/Tomsk", city: "Tomsk"}
           ]
+
         },
         {
           value: "China Standard Time",
@@ -1216,7 +3339,13 @@ export default {
             "Asia/Hong_Kong",
             "Asia/Macau",
             "Asia/Shanghai"
+          ],
+          cities: [
+            {timezone: "Asia/Hong_Kong", city: "Hong Kong"},
+            {timezone: "Asia/Macau", city: "Macau"},
+            {timezone: "Asia/Shanghai", city: "Shanghai"}
           ]
+
         },
         {
           value: "North Asia Standard Time",
@@ -1226,7 +3355,11 @@ export default {
           text: "(UTC+08:00) Krasnoyarsk",
           utc: [
             "Asia/Krasnoyarsk"
+          ],
+          cities: [
+            {timezone: "Asia/Krasnoyarsk", city: "Krasnoyarsk"}
           ]
+
         },
         {
           value: "Singapore Standard Time",
@@ -1242,7 +3375,17 @@ export default {
             "Asia/Manila",
             "Asia/Singapore",
             "Etc/GMT-8"
+          ],
+          cities: [
+            {timezone: "Asia/Brunei", city: "Bandar Seri Begawan"},
+            {timezone: "Asia/Kuala_Lumpur", city: "Kuala Lumpur"},
+            {timezone: "Asia/Kuching", city: "Kuching"},
+            {timezone: "Asia/Makassar", city: "Makassar"},
+            {timezone: "Asia/Manila", city: "Manila"},
+            {timezone: "Asia/Singapore", city: "Singapore"},
+            {timezone: "Etc/GMT-8", city: "GMT-8 (unspecified location)"}
           ]
+
         },
         {
           value: "W. Australia Standard Time",
@@ -1253,7 +3396,12 @@ export default {
           utc: [
             "Antarctica/Casey",
             "Australia/Perth"
+          ],
+          cities: [
+            {timezone: "Antarctica/Casey", city: "Casey Station"},
+            {timezone: "Australia/Perth", city: "Perth"}
           ]
+
         },
         {
           value: "Taipei Standard Time",
@@ -1263,7 +3411,11 @@ export default {
           text: "(UTC+08:00) Taipei",
           utc: [
             "Asia/Taipei"
+          ],
+          cities: [
+            {timezone: "Asia/Taipei", city: "Taipei"}
           ]
+
         },
         {
           value: "Ulaanbaatar Standard Time",
@@ -1274,7 +3426,12 @@ export default {
           utc: [
             "Asia/Choibalsan",
             "Asia/Ulaanbaatar"
+          ],
+          cities: [
+            {timezone: "Asia/Choibalsan", city: "Choibalsan"},
+            {timezone: "Asia/Ulaanbaatar", city: "Ulaanbaatar"}
           ]
+
         },
         {
           value: "North Asia East Standard Time",
@@ -1284,7 +3441,11 @@ export default {
           text: "(UTC+08:00) Irkutsk",
           utc: [
             "Asia/Irkutsk"
+          ],
+          cities: [
+            {timezone: "Asia/Irkutsk", city: "Irkutsk"}
           ]
+
         },
         {
           value: "Japan Standard Time",
@@ -1298,7 +3459,15 @@ export default {
             "Asia/Tokyo",
             "Etc/GMT-9",
             "Pacific/Palau"
+          ],
+          cities: [
+            {timezone: "Asia/Dili", city: "Dili"},
+            {timezone: "Asia/Jayapura", city: "Jayapura"},
+            {timezone: "Asia/Tokyo", city: "Tokyo"},
+            {timezone: "Etc/GMT-9", city: "Etc GMT-9"},
+            {timezone: "Pacific/Palau", city: "Ngerulmud"}
           ]
+
         },
         {
           value: "Korea Standard Time",
@@ -1309,7 +3478,12 @@ export default {
           utc: [
             "Asia/Pyongyang",
             "Asia/Seoul"
+          ],
+          cities: [
+            {timezone: "Asia/Pyongyang", city: "Pyongyang"},
+            {timezone: "Asia/Seoul", city: "Seoul"}
           ]
+
         },
         {
           value: "Cen. Australia Standard Time",
@@ -1320,7 +3494,12 @@ export default {
           utc: [
             "Australia/Adelaide",
             "Australia/Broken_Hill"
+          ],
+          cities: [
+            {timezone: "Australia/Adelaide", city: "Adelaide"},
+            {timezone: "Australia/Broken_Hill", city: "Broken Hill"}
           ]
+
         },
         {
           value: "AUS Central Standard Time",
@@ -1330,7 +3509,11 @@ export default {
           text: "(UTC+09:30) Darwin",
           utc: [
             "Australia/Darwin"
+          ],
+          cities: [
+            {timezone: "Australia/Darwin", city: "Darwin"}
           ]
+
         },
         {
           value: "E. Australia Standard Time",
@@ -1341,7 +3524,12 @@ export default {
           utc: [
             "Australia/Brisbane",
             "Australia/Lindeman"
+          ],
+          cities: [
+            {timezone: "Australia/Brisbane", city: "Brisbane"},
+            {timezone: "Australia/Lindeman", city: "Lindeman"}
           ]
+
         },
         {
           value: "AUS Eastern Standard Time",
@@ -1352,7 +3540,12 @@ export default {
           utc: [
             "Australia/Melbourne",
             "Australia/Sydney"
+          ],
+          cities: [
+            {timezone: "Australia/Melbourne", city: "Melbourne"},
+            {timezone: "Australia/Sydney", city: "Sydney"}
           ]
+
         },
         {
           value: "West Pacific Standard Time",
@@ -1367,7 +3560,16 @@ export default {
             "Pacific/Port_Moresby",
             "Pacific/Saipan",
             "Pacific/Truk"
+          ],
+          cities: [
+            {timezone: "Antarctica/DumontDUrville", city: "Dumont d'Urville Station"},
+            {timezone: "Etc/GMT-10", city: "UTC+10 (no specific city)"},
+            {timezone: "Pacific/Guam", city: "Hagatna"},
+            {timezone: "Pacific/Port_Moresby", city: "Port Moresby"},
+            {timezone: "Pacific/Saipan", city: "Saipan"},
+            {timezone: "Pacific/Truk", city: "Weno"}
           ]
+
         },
         {
           value: "Tasmania Standard Time",
@@ -1378,7 +3580,12 @@ export default {
           utc: [
             "Australia/Currie",
             "Australia/Hobart"
+          ],
+          cities: [
+            {timezone: "Australia/Currie", city: "Currie"},
+            {timezone: "Australia/Hobart", city: "Hobart"}
           ]
+
         },
         {
           value: "Yakutsk Standard Time",
@@ -1390,7 +3597,13 @@ export default {
             "Asia/Chita",
             "Asia/Khandyga",
             "Asia/Yakutsk"
+          ],
+          cities: [
+            {timezone: "Asia/Chita", city: "Chita"},
+            {timezone: "Asia/Khandyga", city: "Khandyga"},
+            {timezone: "Asia/Yakutsk", city: "Yakutsk"}
           ]
+
         },
         {
           value: "Central Pacific Standard Time",
@@ -1406,7 +3619,17 @@ export default {
             "Pacific/Kosrae",
             "Pacific/Noumea",
             "Pacific/Ponape"
+          ],
+          cities: [
+            {timezone: "Antarctica/Macquarie", city: "Macquarie Island"},
+            {timezone: "Etc/GMT-11", city: "GMT-11 (No specific city)"},
+            {timezone: "Pacific/Efate", city: "Port Vila"},
+            {timezone: "Pacific/Guadalcanal", city: "Honiara"},
+            {timezone: "Pacific/Kosrae", city: "Tofol"},
+            {timezone: "Pacific/Noumea", city: "Nouméa"},
+            {timezone: "Pacific/Ponape", city: "Palikir"}
           ]
+
         },
         {
           value: "Vladivostok Standard Time",
@@ -1417,7 +3640,12 @@ export default {
           utc: [
             "Asia/Ust-Nera",
             "Asia/Vladivostok"
+          ],
+          cities: [
+            {timezone: "Asia/Ust-Nera", city: "Ust-Nera"},
+            {timezone: "Asia/Vladivostok", city: "Vladivostok"}
           ]
+
         },
         {
           value: "Sakhalin Standard Time",
@@ -1427,7 +3655,11 @@ export default {
           text: "(UTC+11:00) Sakhalin",
           utc: [
             "Asia/Sakhalin"
+          ],
+          cities: [
+            {timezone: "Asia/Sakhalin", city: "Yuzhno-Sakhalinsk"}
           ]
+
         },
 
         {
@@ -1439,7 +3671,12 @@ export default {
           utc: [
             "Antarctica/McMurdo",
             "Pacific/Auckland"
+          ],
+          cities: [
+            {timezone: "Antarctica/McMurdo", city: "McMurdo Station"},
+            {timezone: "Pacific/Auckland", city: "Auckland"}
           ]
+
         },
         {
           value: "UTC+12",
@@ -1456,6 +3693,16 @@ export default {
             "Pacific/Tarawa",
             "Pacific/Wake",
             "Pacific/Wallis"
+          ],
+          cities: [
+            {timezone: "Etc/GMT-12", city: "GMT-12"},
+            {timezone: "Pacific/Funafuti", city: "Funafuti"},
+            {timezone: "Pacific/Kwajalein", city: "Kwajalein"},
+            {timezone: "Pacific/Majuro", city: "Majuro"},
+            {timezone: "Pacific/Nauru", city: "Nauru"},
+            {timezone: "Pacific/Tarawa", city: "Tarawa"},
+            {timezone: "Pacific/Wake", city: "Wake Island"},
+            {timezone: "Pacific/Wallis", city: "Wallis"}
           ]
         },
         {
@@ -1466,7 +3713,11 @@ export default {
           text: "(UTC+12:00) Fiji",
           utc: [
             "Pacific/Fiji"
+          ],
+          cities: [
+            {timezone: "Pacific/Fiji", city: "Suva"}
           ]
+
         },
         {
           value: "Magadan Standard Time",
@@ -1479,7 +3730,14 @@ export default {
             "Asia/Kamchatka",
             "Asia/Magadan",
             "Asia/Srednekolymsk"
+          ],
+          cities: [
+            {timezone: "Asia/Anadyr", city: "Anadyr"},
+            {timezone: "Asia/Kamchatka", city: "Petropavlovsk-Kamchatsky"},
+            {timezone: "Asia/Magadan", city: "Magadan"},
+            {timezone: "Asia/Srednekolymsk", city: "Srednekolymsk"}
           ]
+
         },
         {
           value: "Kamchatka Standard Time",
@@ -1489,7 +3747,11 @@ export default {
           text: "(UTC+12:00) Petropavlovsk-Kamchatsky - Old",
           utc: [
             "Asia/Kamchatka"
+          ],
+          cities: [
+            {timezone: "Asia/Kamchatka", city: "Petropavlovsk-Kamchatsky"}
           ]
+
         },
         {
           value: "Tonga Standard Time",
@@ -1502,7 +3764,14 @@ export default {
             "Pacific/Enderbury",
             "Pacific/Fakaofo",
             "Pacific/Tongatapu"
+          ],
+          cities: [
+            {timezone: "Etc/GMT-13", city: "N/A (Fixed offset timezone)"},
+            {timezone: "Pacific/Enderbury", city: "Enderbury Island"},
+            {timezone: "Pacific/Fakaofo", city: "Fakaofo"},
+            {timezone: "Pacific/Tongatapu", city: "Nukuʻalofa"}
           ]
+
         },
         {
           value: "Samoa Standard Time",
@@ -1512,7 +3781,11 @@ export default {
           text: "(UTC+13:00) Samoa",
           utc: [
             "Pacific/Apia"
+          ],
+          cities: [
+            {timezone: "Pacific/Apia", city: "Apia"}
           ]
+
         }
       ]
     }
@@ -1521,6 +3794,34 @@ export default {
     setInterval(() => {
       this.currentTime = dayjs().format();
     }, 1000);
+  },
+  computed: {
+
+    filteredItems() {
+
+      if (!this.searchKey) {
+
+        return this.items;
+
+      }
+
+
+      return this.items.filter(item => {
+        return item.cities && item.cities.filter(city => city.city.toLowerCase().includes(this.searchKey.toLowerCase())).length > 0
+      });
+    }
+
+  },
+  methods: {
+
+    searchChanged(q) {
+      this.searchKey = q.target.value;
+      console.log(this.searchKey)
+    },
+    setTheme() {
+
+      f7.setDarkMode(false);
+    }
   }
 }
 

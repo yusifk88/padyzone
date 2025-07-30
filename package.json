@@ -30,6 +30,7 @@
     "@capacitor/splash-screen": "^7.0.1",
     "@capacitor/status-bar": "^7.0.1",
     "dayjs": "^1.11.13",
+    "dexie": "^4.0.11",
     "dom7": "^4.0.6",
     "framework7": "^8.3.4",
     "framework7-icons": "^5.0.5",
