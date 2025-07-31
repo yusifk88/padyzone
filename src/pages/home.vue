@@ -11,11 +11,18 @@
         <f7-button @click="setTheme">Change Theme</f7-button>
       </f7-nav-right>
     </f7-navbar>
-    <f7-block>
+    <f7-block class="no-margin-top">
       <p>Track time across the world</p>
     </f7-block>
 
-    <timezone-card></timezone-card>
+    <template v-if="myTimeZones">
+      <timezone-card
+          v-for="timeZone in myTimeZones"
+          :item="timeZone"
+          :CurrentTime="currentTime"
+      ></timezone-card>
+    </template>
+
     <f7-fab @click="show=!show" position="center-bottom">
       <f7-icon ios="f7:person_badge_plus" md="material:person_badge_plus"></f7-icon>
     </f7-fab>
@@ -40,9 +47,10 @@
         <f7-searchbar
             @click:clear="searchKey=''"
             placeholder="Enter name of their city"
-            :expandable="false"
             :custom-search="true"
+            :outline="true"
             @input="searchChanged"
+            :backdrop="false"
         ></f7-searchbar>
       </f7-subnavbar>
 
@@ -62,6 +70,8 @@
               v-for="timeZoneItems in filteredItems"
               :item="timeZoneItems"
               :CurrentTime="currentTime"
+              :search-q="searchKey"
+              @add="addZone"
           ></timezone-item>
 
         </f7-list>
@@ -78,12 +88,16 @@ import TimezoneCard from "@/components/TimezoneCard.vue";
 import TimezoneItem from "@/components/TimezoneItem.vue";
 import dayjs from "dayjs";
 import {f7} from "framework7-vue";
+import {liveQuery} from "dexie";
+import {useObservable} from "@vueuse/rxjs";
+import {db} from "@/js/db";
 
 export default {
   components: {TimezoneItem, TimezoneCard},
   data() {
     return {
       searchKey: "",
+      myTimeZones: useObservable(liveQuery(() => db.timezones.toArray())),
       currentTime: dayjs().format(),
       show: false,
       items: [
@@ -3797,6 +3811,11 @@ export default {
   },
   computed: {
 
+    // myTimeZones() {
+    //  return useObservable(liveQuery(() => db.timezones.toArray()));
+    //
+    // },
+
     filteredItems() {
 
       if (!this.searchKey) {
@@ -3821,6 +3840,20 @@ export default {
     setTheme() {
 
       f7.setDarkMode(false);
+    },
+    async addZone(zone) {
+
+      const data = {
+        timezone: zone.timezone,
+        city: zone.city,
+        people: []
+      };
+
+      const savedItem = await db.timezones.add(data);
+
+      console.log(savedItem);
+      this.show = false;
+
     }
   }
 }
